@@ -8,7 +8,7 @@ running=True
 
 pygame.display.set_caption("A GAME")
 icon=pygame.image.load('sEnemy.png')
-bg=pygame.image.load("BG.png")
+bg=pygame.image.load("BG2.png")
 pygame.display.set_icon(icon)
 
 playerimg=pygame.image.load("sPlayer0.png")
