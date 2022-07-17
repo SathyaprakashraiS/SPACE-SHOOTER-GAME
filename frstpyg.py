@@ -25,6 +25,16 @@ bulletxarray=[]
 bulletyarray=[]
 bulletbool=False
 cooldown=0
+
+coins=0
+font=pygame.font.Font('freesansbold.ttf',32)
+textx=10
+texty=10
+
+def scoreboard(x,y):
+	score=font.render("SCORE:"+str(coins),True,(255,255,255))
+	screen.blit(score,(x,y))
+
 def bodyboundary(objimg,posx,posy):
 	if(posx>=750):
 		posx=750
@@ -121,5 +131,5 @@ while running:
 		if event.key==pygame.K_RIGHT:
 			print("lift right")
 			playerx-=0
-
+	scoreboard(textx,texty)
 	pygame.display.update()
