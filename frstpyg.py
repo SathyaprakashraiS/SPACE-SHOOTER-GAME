@@ -83,7 +83,13 @@ def bullet(bulletxpos,bulletypos):
 		bulletypos-=1
 		return bulletxpos,bulletypos,True
 
+priority=[0,0,0,0]
+double=False
+stopper=0
 while running:
+	#[left,right,up,down]
+	print(priority,double)
+	keys=pygame.key.get_pressed()
 	screen.fill((255,255,255))
 	screen.blit(bg,(0,0))
 	for event in pygame.event.get():
@@ -107,11 +113,12 @@ while running:
 	enemy(enemyx,enemyx)
 	cooldown+=1
 	if event.type==pygame.KEYDOWN:
-		if event.key==pygame.K_LEFT:
+		'''
+		if keys[pygame.K_LEFT]:
 			print("press left")
 			playerx-=0.3
 			playery+=0
-		if event.key==pygame.K_RIGHT:
+		if keys[pygame.K_RIGHT]:
 			print("press right")
 			playerx+=0.3
 			playery+=0
@@ -124,6 +131,81 @@ while running:
 			screen.blit(bulletimg,(bulletx,bullety))
 			bulletbool=True
 			cooldown=0
+		'''
+		if(keys[pygame.K_LEFT] and keys[pygame.K_RIGHT]):
+			print("both left and right")
+			if(priority[0]==0 and priority[1]==1 and double==False):
+				playerx-=0.3
+				playery+=0
+				priority=[0,0,0,0]
+				priority[0]=1
+				double=True
+			elif(priority[0]==1 and priority[1]==0 and double==False):
+				playerx+=0.3
+				playery+=0
+				priority=[0,0,0,0]
+				priority[1]=1
+				double=True
+			elif(priority[0]==0 and priority[1]==1 and double==True):
+				playerx-=0.3
+				playery+=0
+				double=True
+			elif(priority[0]==1 and priority[1]==0 and double==True):
+				playerx+=0.3
+				playery+=0
+				double=True
+		elif(keys[pygame.K_LEFT]):
+			print("only left")
+			print("press left")
+			playerx-=0.3
+			playery+=0
+			priority=[0,0,0,0]
+			priority[0]=1
+			double=False
+		elif(keys[pygame.K_RIGHT]):
+			print("only right")
+			print("press right")
+			playerx+=0.3
+			playery+=0
+			priority=[0,0,0,0]
+			priority[1]=1
+			double=False
+		elif(keys[pygame.K_DOWN] ):
+			print("only down")
+			playerx+=0
+			playery+=0
+			priority=[0,0,0,0]
+			priority[3]=1
+			double=False
+		#elif(keys[pygame.K_UP] and (cooldown>=100)):
+		elif((keys[pygame.K_UP] and (cooldown>=100)) or (priority[2]==1 and (cooldown>=100) and double==True)):
+			print("only up")
+			print("press space")
+			bulletx=playerx
+			bullety=playery-33
+			priority=[0,0,0,0]
+			priority[3]=1
+			bulletxarray.append(bulletx)
+			bulletyarray.append(bullety)
+			screen.blit(bulletimg,(bulletx,bullety))
+			bulletbool=True
+			cooldown=0
+			double=True
+		else:
+			print("nothing")
+			priority=[0,0,0,0]
+	
+	elif((priority[0]==1 and double==True) or (priority[1]==1 and double==True)):
+		if(priority[0]==1 and double==True):
+			playerx-=0.3
+			playery+=0
+			print("IN HERE 1")
+		elif(priority[1]==1 and double==True):
+			playerx+=0.3
+			playery+=0
+			print("IN HERE 2")
+
+	'''		
 	if event.type==pygame.KEYUP:
 		if event.key==pygame.K_LEFT:
 			print("lift left")
@@ -131,5 +213,6 @@ while running:
 		if event.key==pygame.K_RIGHT:
 			print("lift right")
 			playerx-=0
+	'''
 	scoreboard(textx,texty)
 	pygame.display.update()
