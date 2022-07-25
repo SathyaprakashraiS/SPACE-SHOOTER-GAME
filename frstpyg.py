@@ -51,7 +51,10 @@ mangle=0
 starttimer=0
 highscorestimer=0
 quittimer=0
-selecttime=150
+selecttime=125
+
+bulletspeed=1.5
+shipspeed=1
 
 def title(x,y):
 	gtitle=titlefont.render(gname,True,(255,255,255))
@@ -140,7 +143,7 @@ def bullet(bulletxpos,bulletypos):
 		return bulletxpos,bulletypos,False
 	else:
 		screen.blit(bulletimg,(bulletxpos,bulletypos))
-		bulletypos-=1
+		bulletypos-=bulletspeed
 		return bulletxpos,bulletypos,True
 priority=[0,0,0,0]
 double=False
@@ -261,29 +264,29 @@ while running:
 			if(keys[pygame.K_LEFT] and keys[pygame.K_RIGHT]):
 				print("both left and right")
 				if(priority[0]==0 and priority[1]==1 and double==False):
-					playerx-=movespeed
+					playerx-=shipspeed
 					playery+=0
 					priority=[0,0,0,0]
 					priority[0]=1
 					double=True
 				elif(priority[0]==1 and priority[1]==0 and double==False):
-					playerx+=movespeed
+					playerx+=shipspeed
 					playery+=0
 					priority=[0,0,0,0]
 					priority[1]=1
 					double=True
 				elif(priority[0]==0 and priority[1]==1 and double==True):
-					playerx-=movespeed
+					playerx-=shipspeed
 					playery+=0
 					double=True
 				elif(priority[0]==1 and priority[1]==0 and double==True):
-					playerx+=movespeed
+					playerx+=shipspeed
 					playery+=0
 					double=True
 			elif(keys[pygame.K_LEFT]):
 				print("only left")
 				print("press left")
-				playerx-=movespeed
+				playerx-=shipspeed
 				playery+=0
 				priority=[0,0,0,0]
 				priority[0]=1
@@ -291,7 +294,7 @@ while running:
 			elif(keys[pygame.K_RIGHT]):
 				print("only right")
 				print("press right")
-				playerx+=movespeed
+				playerx+=shipspeed
 				playery+=0
 				priority=[0,0,0,0]
 				priority[1]=1
@@ -323,11 +326,11 @@ while running:
 		
 		elif((priority[0]==1 and double==True) or (priority[1]==1 and double==True)):
 			if(priority[0]==1 and double==True):
-				playerx-=movespeed
+				playerx-=shipspeed
 				playery+=0
 				print("IN HERE 1")
 			elif(priority[1]==1 and double==True):
-				playerx+=movespeed
+				playerx+=shipspeed
 				playery+=0
 				print("IN HERE 2")
 
