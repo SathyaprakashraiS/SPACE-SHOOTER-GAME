@@ -94,7 +94,7 @@ def menurotator(mplayerx,mplayery,mangle):
 	elif(ticker==7):
 		#SW
 		pass
-	return mplayerx,mplayery,mangle
+	return mplayerx,mplayery,mangle-10
 def player(playerx,playery):
 	if(playerx>=750):
 		playerx=750
@@ -130,7 +130,6 @@ def bullet(bulletxpos,bulletypos):
 		screen.blit(bulletimg,(bulletxpos,bulletypos))
 		bulletypos-=1
 		return bulletxpos,bulletypos,True
-
 priority=[0,0,0,0]
 double=False
 stopper=0
@@ -143,35 +142,45 @@ while running:
 			if event.type== pygame.QUIT:
 				running=False
 		title(230,100)
-
 		#pygame.draw.rect(screen,(R,G,B),[xpos,ypos,width,height])
 		pygame.draw.rect(screen,(0,0,0),[340,290,125,50])
 		start=font.render('START' , True , (255,255,255))
 		pygame.draw.rect(screen,(0,0,0),[290,340,240,50])
-		scoreboard=font.render('HIGH SCORES' , True , (255,255,255))
+		viewscore=font.render('HIGH SCORES' , True , (255,255,255))
 		pygame.draw.rect(screen,(0,0,0),[350,390,100,50])
 		quit=font.render('QUIT' , True , (255,255,255))
 		print(mousepos[0],mousepos[1])
 		if(330<=mousepos[0]<=450 and 280<=mousepos[1]<=330):
 			pygame.draw.rect(screen,(100,100,100),[340,290,125,50])
+			for event in pygame.event.get():
+				if(330<=mousepos[0]<=450 and 280<=mousepos[1]<=330 and event.type==pygame.MOUSEBUTTONDOWN):
+					menu=False
+					game=True
 		elif(280<=mousepos[0]<=500 and 330<=mousepos[1]<=380):
 			pygame.draw.rect(screen,(100,100,100),[290,340,240,50])
 		elif(340<=mousepos[0]<=550 and 380<=mousepos[1]<=430):
 			pygame.draw.rect(screen,(100,100,100),[350,390,100,50])
+			for event in pygame.event.get():
+				if(340<=mousepos[0]<=550 and 380<=mousepos[1]<=430 and event.type==pygame.MOUSEBUTTONDOWN):
+					pygame.quit()
 		#else:
 			#pygame.draw.rect(screen,(100,100,100),[340,290,125,50])
 		screen.blit(start,(350,300))
-		screen.blit(scoreboard,(300,350))
+		screen.blit(viewscore,(300,350))
 		screen.blit(quit,(360,400))
 
-		mplayerx,mplayery,mangle=menurotator(mplayerx,mplayery,mangle)
+		mplayerx,mplayery,mangle=menurotator(mousepos[0]-10,mousepos[1]-15,mangle)
+		'''
 		for event in pygame.event.get():
 			if event.type== pygame.QUIT:
 				running=False
-			if event.type==pygame.MOUSEBUTTONDOWN:
+			elif event.type==pygame.MOUSEBUTTONDOWN:
 				if(340<=mousepos[0]<=550 and 380<=mousepos[1]<=430):
-					print("HERE",mousepos)
 					pygame.quit()
+				elif(330<=mousepos[0]<=450 and 280<=mousepos[1]<=330):
+					menu=False
+					game=True
+		'''
 		pygame.display.update()
 	#[left,right,up,down]
 	elif(game):
