@@ -1,6 +1,7 @@
 import pygame
 import random
 import time
+import os
 pygame.init()
 #(width,height)
 screen=pygame.display.set_mode((800,600))
@@ -47,6 +48,11 @@ mplayerx=200
 mplayery=200
 mangle=0
 
+starttimer=0
+highscorestimer=0
+quittimer=0
+selecttime=150
+
 def title(x,y):
 	gtitle=titlefont.render(gname,True,(255,255,255))
 	screen.blit(gtitle,(x,y))
@@ -72,6 +78,8 @@ def menurotator(mplayerx,mplayery,mangle):
 	ticker=random.randint(0,7)
 	if(ticker==0):
 		#N
+		if():
+			pass
 		pass
 	elif(ticker==1):
 		#E
@@ -94,7 +102,11 @@ def menurotator(mplayerx,mplayery,mangle):
 	elif(ticker==7):
 		#SW
 		pass
-	return mplayerx,mplayery,mangle-10
+	return mplayerx,mplayery,mangle-1
+def quitfunc():
+	print("QUITTING...")
+	time.sleep(1)
+	os._exit(0)
 def player(playerx,playery):
 	if(playerx>=750):
 		playerx=750
@@ -152,17 +164,34 @@ while running:
 		print(mousepos[0],mousepos[1])
 		if(330<=mousepos[0]<=450 and 280<=mousepos[1]<=330):
 			pygame.draw.rect(screen,(100,100,100),[340,290,125,50])
+			starttimer+=1
+			if(starttimer>selecttime):
+				menu=False
+				game=True
+			'''
 			for event in pygame.event.get():
 				if(330<=mousepos[0]<=450 and 280<=mousepos[1]<=330 and event.type==pygame.MOUSEBUTTONDOWN):
 					menu=False
 					game=True
+			'''
 		elif(280<=mousepos[0]<=500 and 330<=mousepos[1]<=380):
 			pygame.draw.rect(screen,(100,100,100),[290,340,240,50])
+			highscorestimer+=1
+			starttimer=0
+			quittimer=0
 		elif(340<=mousepos[0]<=550 and 380<=mousepos[1]<=430):
 			pygame.draw.rect(screen,(100,100,100),[350,390,100,50])
+			quittimer+=1
+			starttimer=0
+			highscorestimer=0
+			if(quittimer>selecttime):
+				pygame.quit()
+				quitfunc()
+			'''
 			for event in pygame.event.get():
 				if(340<=mousepos[0]<=550 and 380<=mousepos[1]<=430 and event.type==pygame.MOUSEBUTTONDOWN):
 					pygame.quit()
+			'''
 		#else:
 			#pygame.draw.rect(screen,(100,100,100),[340,290,125,50])
 		screen.blit(start,(350,300))
@@ -181,6 +210,7 @@ while running:
 					menu=False
 					game=True
 		'''
+
 		pygame.display.update()
 	#[left,right,up,down]
 	elif(game):
