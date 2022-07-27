@@ -22,8 +22,20 @@ bulletimg=pygame.image.load("sBullet.png")
 
 playerx=300
 playery=400
-enemyx=random.randint(2,798)
-enemyy=random.randint(2,598)
+#enemyx=random.randint(2,798)
+#enemyy=random.randint(2,300)
+#spawn enemy before 300 so player can hit him
+
+e1x=[]
+e1y=[]
+e1turner=[]
+e1spwaner=5
+spawncooldown=5000
+
+enemyx=20
+enemyy=450
+#enemyx=[]
+#enemyy=[]
 bulletx=300
 bullety=367
 bulletxarray=[]
@@ -52,6 +64,7 @@ starttimer=0
 highscorestimer=0
 quittimer=0
 selecttime=125
+quitselecttime=250
 
 bulletspeed=1.5
 shipspeed=1
@@ -122,19 +135,21 @@ def player(playerx,playery):
 	else:
 		screen.blit(playerimg,(playerx,playery))
 	return playerx,playery
-def enemy(playerx,playery):
-	if(playerx>=750):
-		playerx=750
-		playery=playery
-		screen.blit(enemyimg,(playerx,playery))
-	elif(playerx<=2):
-		playerx=2
-		playery=playery
-		screen.blit(enemyimg,(playerx,playery))
-	elif():
-		pass
+def enemy(enemyx,enemyy):
+	if(enemyx>=750):
+		enemyx=10
+		enemyy=enemyy
+		screen.blit(enemyimg,(enemyx,enemyy))
+	elif(enemyx<=2):
+		enemyx=750
+		enemyy=enemyy
+		screen.blit(enemyimg,(enemyx,enemyy))
 	else:
-		screen.blit(enemyimg,(playerx,playery))
+		enemyx+=1
+		enemyy=450
+		print("enemy pos:",enemyx,enemyy)
+		screen.blit(enemyimg,(enemyx,enemyy))
+		return enemyx,enemyy
 
 def bullet(bulletxpos,bulletypos):
 	if(bulletypos>=595):
@@ -168,6 +183,8 @@ while running:
 		if(330<=mousepos[0]<=450 and 280<=mousepos[1]<=330):
 			pygame.draw.rect(screen,(100,100,100),[340,290,125,50])
 			starttimer+=1
+			highscorestimer=0
+			quittimer=0
 			if(starttimer>selecttime):
 				menu=False
 				game=True
@@ -187,7 +204,7 @@ while running:
 			quittimer+=1
 			starttimer=0
 			highscorestimer=0
-			if(quittimer>selecttime):
+			if(quittimer>quitselecttime):
 				pygame.quit()
 				quitfunc()
 			'''
@@ -217,10 +234,44 @@ while running:
 		pygame.display.update()
 	#[left,right,up,down]
 	elif(game):
+		spawncooldown+=1
 		print(priority,double)
 		keys=pygame.key.get_pressed()
 		screen.fill((255,255,255))
 		screen.blit(bg,(0,0))
+		if(e1spwaner>0 and spawncooldown>=1000):
+			spawncooldown=0
+			e1spwaner-=1
+			spawnerx=random.randint(20,300)
+			#spawnery=random.randint(2,300)
+			spawnery=10
+			e1x.append(spawnerx)
+			e1y.append(spawnery)
+			temp=random.randint(0,5)
+			if((temp%2)==0):
+				e1turner.append(1)
+			else:
+				e1turner.append(-1)
+		for i in range(len(e1x)):
+			if(e1turner[i]!=0):
+				if(e1x[i]>=790):
+					e1turner[i]=-1
+					e1x[i]-=1
+					e1y[i]+=20
+					screen.blit(enemyimg,(e1x[i],e1y[i]))
+				elif(e1x[i]<=10):
+					e1turner[i]=1
+					e1x[i]+=1
+					e1y[i]+=20
+					screen.blit(enemyimg,(e1x[i],e1y[i]))
+				elif(e1turner[i]==1):
+					e1x[i]+=1
+					#e1y[i]+=20
+					screen.blit(enemyimg,(e1x[i],e1y[i]))
+				elif(e1turner[i]==-1):
+					e1x[i]-=1
+					#e1y[i]+=20
+					screen.blit(enemyimg,(e1x[i],e1y[i]))
 		for event in pygame.event.get():
 			if event.type== pygame.QUIT:
 				running=False
@@ -239,7 +290,7 @@ while running:
 					bulletxarray[i]=-1
 					bulletyarray[i]=-1
 		playerx,playery=player(playerx,playery)
-		enemy(enemyx,enemyx)
+		#enemyx,enemyy=enemy(enemyx,enemyx)
 		cooldown+=1
 		if event.type==pygame.KEYDOWN:
 			'''
