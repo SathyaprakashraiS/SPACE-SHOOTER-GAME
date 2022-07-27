@@ -2,6 +2,7 @@ import pygame
 import random
 import time
 import os
+import math
 pygame.init()
 #(width,height)
 screen=pygame.display.set_mode((800,600))
@@ -55,6 +56,7 @@ menu=True
 game=False
 credits=False
 highscores=False
+hit=False
 
 mplayerx=200
 mplayery=200
@@ -135,21 +137,57 @@ def player(playerx,playery):
 	else:
 		screen.blit(playerimg,(playerx,playery))
 	return playerx,playery
-def enemy(enemyx,enemyy):
-	if(enemyx>=750):
-		enemyx=10
-		enemyy=enemyy
-		screen.blit(enemyimg,(enemyx,enemyy))
-	elif(enemyx<=2):
-		enemyx=750
-		enemyy=enemyy
-		screen.blit(enemyimg,(enemyx,enemyy))
+def enemy(e1turner,e1x,e1y):
+	if(e1turner!=0):
+		if(e1turner==1):
+			if(e1x>=765):
+				e1turner=-1
+				e1x-=1
+				e1y+=20
+				screen.blit(enemyimg,(e1x,e1y))
+				return e1turner,e1x,e1y
+			elif(e1x<=10):
+				e1turner=1
+				e1x+=1
+				e1y+=20
+				screen.blit(enemyimg,(e1x,e1y))
+				return e1turner,e1x,e1y
+			else:
+				e1x+=1
+				#e1y[i]+=20
+				screen.blit(enemyimg,(e1x,e1y))
+				return e1turner,e1x,e1y
+		if(e1turner==-1):
+			if(e1x>=765):
+				e1turner=-1
+				e1x-=1
+				e1y+=20
+				screen.blit(enemyimg,(e1x,e1y))
+				return e1turner,e1x,e1y
+			elif(e1x<=10):
+				e1turner=1
+				e1x+=1
+				e1y+=20
+				screen.blit(enemyimg,(e1x,e1y))
+				return e1turner,e1x,e1y
+			else:
+				e1x-=1
+				#e1y[i]+=20
+				screen.blit(enemyimg,(e1x,e1y))
+				return e1turner,e1x,e1y
 	else:
-		enemyx+=1
-		enemyy=450
-		print("enemy pos:",enemyx,enemyy)
-		screen.blit(enemyimg,(enemyx,enemyy))
-		return enemyx,enemyy
+		return e1turner,e1x,e1y
+
+def bulletcollider(e1turner,eposx,eposy,bposx,bposy,hit):
+	if(e1turner!=0):
+		distance=math.sqrt(((bposx-eposx)*(bposx-eposx))+((bposy-eposy)*(bposy-eposy)))
+		if(distance<=25):
+			spawncooldown
+			return 0,-1,-1,-1,-1,True
+		else:
+			return e1turner,eposx,eposy,bposx,bposy,False
+	else:
+		return e1turner,eposx,eposy,bposx,bposy,False
 
 def bullet(bulletxpos,bulletypos):
 	if(bulletypos>=595):
@@ -253,6 +291,9 @@ while running:
 			else:
 				e1turner.append(-1)
 		for i in range(len(e1x)):
+			print(e1turner[i],e1x[i],e1y[i])
+			e1turner[i],e1x[i],e1y[i]=enemy(e1turner[i],e1x[i],e1y[i])
+			'''
 			if(e1turner[i]!=0):
 				if(e1x[i]>=790):
 					e1turner[i]=-1
@@ -272,10 +313,17 @@ while running:
 					e1x[i]-=1
 					#e1y[i]+=20
 					screen.blit(enemyimg,(e1x[i],e1y[i]))
+			'''
 		for event in pygame.event.get():
 			if event.type== pygame.QUIT:
 				running=False
 
+		for i in range(len(e1x)):
+			for j in range(len(bulletxarray)):
+				e1turner[i],e1x[i],e1y[i],bulletxarray[j],bulletyarray[j],hit=bulletcollider(e1turner[i],e1x[i],e1y[i],bulletxarray[j],bulletyarray[j],hit)
+				if(hit):
+					e1spwaner+=1
+					coins+=10
 		for i in range(len(bulletxarray)):
 			if(bulletxarray[i]==-1):
 				pass
