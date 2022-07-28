@@ -15,6 +15,7 @@ pygame.display.set_caption("A GAME")
 icon=pygame.image.load('sEnemy.png')
 bg=pygame.image.load("BG2.png")
 menuimg=pygame.image.load("D:/PYGAME/sprites/bgs/c1.png")
+gameoverimg=pygame.image.load("D:/PYGAME/sprites/bgs/sOver.jpg")
 pygame.display.set_icon(icon)
 
 playerimg=pygame.image.load("sPlayer0.png")
@@ -57,6 +58,8 @@ game=False
 credits=False
 highscores=False
 hit=False
+collided=False
+gameover=False
 
 mplayerx=200
 mplayery=200
@@ -188,6 +191,13 @@ def bulletcollider(e1turner,eposx,eposy,bposx,bposy,hit):
 			return e1turner,eposx,eposy,bposx,bposy,False
 	else:
 		return e1turner,eposx,eposy,bposx,bposy,False
+
+def shipcollider(eposx,eposy,pposx,pposy):
+	distance=math.sqrt(((pposx-eposx)*(pposx-eposx))+((pposy-eposy)*(pposy-eposy)))
+	if(distance<=10):
+		return True
+	else:
+		return False
 
 def bullet(bulletxpos,bulletypos):
 	if(bulletypos>=595):
@@ -321,9 +331,26 @@ while running:
 		for i in range(len(e1x)):
 			for j in range(len(bulletxarray)):
 				e1turner[i],e1x[i],e1y[i],bulletxarray[j],bulletyarray[j],hit=bulletcollider(e1turner[i],e1x[i],e1y[i],bulletxarray[j],bulletyarray[j],hit)
+				collided=shipcollider(e1x[i],e1y[i],playerx,playery)
 				if(hit):
 					e1spwaner+=1
 					coins+=10
+				elif(collided):
+					gameover=True
+					menu=False
+					game=False
+				elif(e1y[i]>=450):
+					gameover=True
+					menu=False
+					game=False
+		'''
+		for i in range(len(e1x)):
+			collided=shipcollider(e1x[i],e1y[i],playerx,playery)
+			if(collided):
+				gameover=True
+			elif(e1y[i]>=450):
+				gameoveer=True
+		'''
 		for i in range(len(bulletxarray)):
 			if(bulletxarray[i]==-1):
 				pass
@@ -432,7 +459,6 @@ while running:
 				playerx+=shipspeed
 				playery+=0
 				print("IN HERE 2")
-
 		'''		
 		if event.type==pygame.KEYUP:
 			if event.key==pygame.K_LEFT:
@@ -443,5 +469,11 @@ while running:
 				playerx-=0
 		'''
 		scoreboard(textx,texty)
+		pygame.display.update()
+	elif(gameover):
+		screen.blit(gameoverimg,(0,0))
+		for event in pygame.event.get():
+			if event.type== pygame.QUIT:
+				running=False
 		pygame.display.update()
 	pygame.display.update()
