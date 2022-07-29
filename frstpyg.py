@@ -10,12 +10,15 @@ running=True
 
 gname="Space_shooteR"
 gcatchy=""
+gover="PLANET UNEXPLORED CASUE U EXPLODED !"
+govercatchy=""
 
 pygame.display.set_caption("A GAME")
 icon=pygame.image.load('sEnemy.png')
 bg=pygame.image.load("BG2.png")
 menuimg=pygame.image.load("D:/PYGAME/sprites/bgs/c1.png")
-gameoverimg=pygame.image.load("D:/PYGAME/sprites/bgs/sOver.jpg")
+#gameoverimg=pygame.image.load("D:/PYGAME/sprites/bgs/sOver.jpg")
+gameoverimg=pygame.image.load("D:/PYGAME/sprites/bgs/c0.png")
 pygame.display.set_icon(icon)
 
 playerimg=pygame.image.load("sPlayer0.png")
@@ -53,13 +56,14 @@ menufonts=pygame.font.Font('freesansbold.ttf',32)
 textx=10
 texty=10
 
-menu=True
+menu=False
 game=False
+gameover=True
 credits=False
 highscores=False
 hit=False
 collided=False
-gameover=False
+hsdetected=True
 
 mplayerx=200
 mplayery=200
@@ -67,6 +71,7 @@ mangle=0
 
 starttimer=0
 highscorestimer=0
+fakehighscorestimer=0
 quittimer=0
 selecttime=125
 quitselecttime=250
@@ -77,6 +82,13 @@ shipspeed=1
 def title(x,y):
 	gtitle=titlefont.render(gname,True,(255,255,255))
 	screen.blit(gtitle,(x,y))
+
+def endcard(x,y):
+	govertext=menufonts.render(gover,True,(255,255,255))
+	gcoinstext=menufonts.render("COINS: "+str(coins),True,(255,255,255))
+	screen.blit(govertext,(x,y))
+	screen.blit(gcoinstext,(x+275,y+100))
+
 def scoreboard(x,y):
 	score=font.render("SCORE:"+str(coins),True,(255,255,255))
 	screen.blit(score,(x,y))
@@ -472,8 +484,40 @@ while running:
 		pygame.display.update()
 	elif(gameover):
 		screen.blit(gameoverimg,(0,0))
+		mousepos=pygame.mouse.get_pos()
+		endcard(50,100)
 		for event in pygame.event.get():
 			if event.type== pygame.QUIT:
 				running=False
+		if(highscorestimer>selecttime):
+			print("SAVED SCORE DETECTED")
+		if(fakehighscorestimer>selecttime):
+			print("SAVED FAKE SCORE DETECTED")
+		#pygame.draw.rect(screen,(R,G,B),[xpos,ypos,width,height])
+		if(hsdetected):
+			pygame.draw.rect(screen,(0,0,0),[240,345,320,40])
+			shsdtext=font.render('HIGH SCORE DETECTED !' , True , (255,255,255))
+			shstext=font.render('SAVE HIGH SCORE' , True , (255,255,255))
+			if(240<=mousepos[0]<=560 and 345<=mousepos[1]<=375):
+				pygame.draw.rect(screen,(100,100,100),[240,345,320,40])
+				starttimer=0
+				highscorestimer=0
+				fakehighscorestimer+=0.5
+				quittimer=0
+			screen.blit(shsdtext,(205,290))
+			screen.blit(shstext,(250,350))
+		else:
+			pygame.draw.rect(screen,(0,0,0),[190,285,445,40])
+			shstext=font.render('SAVE THIS AS HIGH SCORE' , True , (255,255,255))
+			if(195<=mousepos[0]<=560 and 285<=mousepos[1]<=330):
+				pygame.draw.rect(screen,(100,100,100),[190,285,445,40])
+				starttimer=0
+				highscorestimer+=0.5
+				fakehighscorestimer=0
+				quittimer=0
+			screen.blit(shstext,(195,290))
+
+		#screen.blit(shstext,(250,290))
+		#screen.blit(shstext,(250,290))
 		pygame.display.update()
 	pygame.display.update()
