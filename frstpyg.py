@@ -48,7 +48,7 @@ bulletyarray=[]
 bulletbool=False
 cooldown=0
 movespeed=1
-coins=0
+coins=1000
 
 font=pygame.font.Font('freesansbold.ttf',32)
 titlefont=pygame.font.Font('freesansbold.ttf',48)
@@ -63,7 +63,8 @@ credits=False
 highscores=False
 hit=False
 collided=False
-hsdetected=True
+hsdetected=False
+tspace=False
 
 mplayerx=200
 mplayery=200
@@ -78,6 +79,97 @@ quitselecttime=250
 
 bulletspeed=1.5
 shipspeed=1
+
+tscores=[]
+wrotescore=False
+
+def reverser(q,coins,temp):
+	for i in range(q+1,len(tscores)):
+		try:
+			thetemp=tscores[i]
+			tscores[i]=temp
+			temp=thetemp
+		except:
+			tscores[i]=temp
+	'''
+	for i in range(len(tscores)-1,q+1,-1):
+		print(i,tscores[i])
+		if(int(tscores[i-1])!=int(coins)):
+			tscores[i]=tscores[i-1]
+		if(int(tscores[i-1])==int(coins)):
+			tscores[i]=temp
+	'''
+
+def hscorewriter(coins,tscores):
+	for i in range(len(tscores)):
+		temp=0
+		if(int(coins)>int(tscores[i])):
+			temp=tscores[i]
+			tscores[i]=coins
+			reverser(i,coins,temp)
+			with open('scores.txt', 'w') as f:
+				for i in range(len(tscores)):
+					f.write(str(tscores[i]))
+					f.write("\n")
+					wrotescore=True
+				return False,wrotescore
+			#f.write(scores)
+	'''
+	for i in range(len(tscores)):
+		if(int(tscores[i])<int(coins)):
+			ss=True
+			try:
+				temp=tscores[i]
+				tscores[i]=coins
+				loc=i
+				display(tscores)
+				flag=True
+				for j in range(i+1,len(tscores)):
+					if(flag):
+						ntemp=tscores[j]
+						tscores[j]=temp
+						flag=False
+						print(temp,tscores[j],ntemp)
+					else:	
+						temp=tscores[j]
+						tscores[j]=ntemp
+						flag=True
+						print("0",temp,tscores[j],ntemp)
+			except:
+				temp=tscores[i]
+				tscores[i]=coins
+				loc=i
+	print("eruken inga",tscores)
+	time.sleep(5)
+	with open('scores.txt', 'w') as f:
+		for i in range(len(tscores)):
+			f.write(str(tscores[i]))
+			f.write("\n")
+			wrotescore=True
+		return False,wrotescore
+			#f.write(scores)
+	'''
+	'''
+	with open('scores.txt', 'w') as f:
+		for i in range(len(names)):
+			f.write(str(names[i]))
+			f.write("\n")
+	'''
+
+def scorereader():
+	with open('scores.txt', encoding='utf8') as f:
+		for line in f:
+			if(line!='\n'):
+				tscores.append(line[:-1])
+			else:
+				tscores.append(0)
+
+def hscoredetector(coins):
+	for i in range(len(tscores)):
+		if(int(tscores[i])<int(coins)):
+			print(tscores[i])
+			return True
+	return False
 
 def title(x,y):
 	gtitle=titlefont.render(gname,True,(255,255,255))
@@ -223,6 +315,7 @@ def bullet(bulletxpos,bulletypos):
 priority=[0,0,0,0]
 double=False
 stopper=0
+scorereader()
 while running:
 	if(menu):
 		mousepos=pygame.mouse.get_pos()
@@ -494,6 +587,7 @@ while running:
 		if(fakehighscorestimer>selecttime):
 			print("SAVED FAKE SCORE DETECTED")
 		#pygame.draw.rect(screen,(R,G,B),[xpos,ypos,width,height])
+		hsdetected=hscoredetector(coins)
 		if(hsdetected):
 			pygame.draw.rect(screen,(0,0,0),[240,345,320,40])
 			shsdtext=font.render('HIGH SCORE DETECTED !' , True , (255,255,255))
@@ -501,9 +595,10 @@ while running:
 			if(240<=mousepos[0]<=560 and 345<=mousepos[1]<=375):
 				pygame.draw.rect(screen,(100,100,100),[240,345,320,40])
 				starttimer=0
-				highscorestimer=0
-				fakehighscorestimer+=0.5
+				highscorestimer+=1
+				fakehighscorestimer=0
 				quittimer=0
+				gameover,menu=hscorewriter(coins,tscores)
 			screen.blit(shsdtext,(205,290))
 			screen.blit(shstext,(250,350))
 		else:
@@ -512,12 +607,13 @@ while running:
 			if(195<=mousepos[0]<=560 and 285<=mousepos[1]<=330):
 				pygame.draw.rect(screen,(100,100,100),[190,285,445,40])
 				starttimer=0
-				highscorestimer+=0.5
-				fakehighscorestimer=0
+				highscorestimer=0
+				fakehighscorestimer+=0.5
 				quittimer=0
 			screen.blit(shstext,(195,290))
-
-		#screen.blit(shstext,(250,290))
-		#screen.blit(shstext,(250,290))
 		pygame.display.update()
+	elif(tspace):
+		print(tscores)
+	elif(wrotescore):
+		print("mudinchu")
 	pygame.display.update()
