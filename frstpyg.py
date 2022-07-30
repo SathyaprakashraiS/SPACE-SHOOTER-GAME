@@ -19,6 +19,7 @@ bg=pygame.image.load("BG2.png")
 menuimg=pygame.image.load("D:/PYGAME/sprites/bgs/c1.png")
 #gameoverimg=pygame.image.load("D:/PYGAME/sprites/bgs/sOver.jpg")
 gameoverimg=pygame.image.load("D:/PYGAME/sprites/bgs/c0.png")
+replayimg=pygame.image.load('D:/PYGAME/sprites/icons/rplypx.png')
 pygame.display.set_icon(icon)
 
 playerimg=pygame.image.load("sPlayer0.png")
@@ -48,7 +49,7 @@ bulletyarray=[]
 bulletbool=False
 cooldown=0
 movespeed=1
-coins=1000
+coins=0
 
 font=pygame.font.Font('freesansbold.ttf',32)
 titlefont=pygame.font.Font('freesansbold.ttf',48)
@@ -58,7 +59,7 @@ texty=10
 
 menu=False
 game=False
-gameover=True
+gameover=False
 credits=False
 highscores=False
 hit=False
@@ -74,6 +75,7 @@ starttimer=0
 highscorestimer=0
 fakehighscorestimer=0
 quittimer=0
+menutimer=0
 selecttime=125
 quitselecttime=250
 
@@ -81,7 +83,87 @@ bulletspeed=1.5
 shipspeed=1
 
 tscores=[]
-wrotescore=False
+wrotescore=True
+
+
+def reset():
+	running=True
+	gname="Space_shooteR"
+	gcatchy=""
+	gover="PLANET UNEXPLORED CASUE U EXPLODED !"
+	govercatchy=""
+
+	pygame.display.set_caption("A GAME")
+	icon=pygame.image.load('sEnemy.png')
+	bg=pygame.image.load("BG2.png")
+	menuimg=pygame.image.load("D:/PYGAME/sprites/bgs/c1.png")
+	#gameoverimg=pygame.image.load("D:/PYGAME/sprites/bgs/sOver.jpg")
+	gameoverimg=pygame.image.load("D:/PYGAME/sprites/bgs/c0.png")
+	replayimg=pygame.image.load('D:/PYGAME/sprites/icons/rplypx.png')
+	pygame.display.set_icon(icon)
+
+	playerimg=pygame.image.load("sPlayer0.png")
+	enemyimg=pygame.image.load("sEnemy0.png")
+	bulletimg=pygame.image.load("sBullet.png")
+
+	playerx=300
+	playery=400
+	#enemyx=random.randint(2,798)
+	#enemyy=random.randint(2,300)
+	#spawn enemy before 300 so player can hit him
+
+	e1x=[]
+	e1y=[]
+	e1turner=[]
+	e1spwaner=5
+	spawncooldown=5000
+
+	enemyx=20
+	enemyy=450
+	#enemyx=[]
+	#enemyy=[]
+	bulletx=300
+	bullety=367
+	bulletxarray=[]
+	bulletyarray=[]
+	bulletbool=False
+	cooldown=0
+	movespeed=1
+	coins=0
+
+	font=pygame.font.Font('freesansbold.ttf',32)
+	titlefont=pygame.font.Font('freesansbold.ttf',48)
+	menufonts=pygame.font.Font('freesansbold.ttf',32)
+	textx=10
+	texty=10
+
+	menu=False
+	game=False
+	gameover=False
+	credits=False
+	highscores=False
+	hit=False
+	collided=False
+	hsdetected=False
+	tspace=False
+
+	mplayerx=200
+	mplayery=200
+	mangle=0
+
+	starttimer=0
+	highscorestimer=0
+	fakehighscorestimer=0
+	quittimer=0
+	menutimer=0
+	selecttime=125
+	quitselecttime=250
+
+	bulletspeed=1.5
+	shipspeed=1
+
+	tscores=[]
+	wrotescore=True
 
 def reverser(q,coins,temp):
 	for i in range(q+1,len(tscores)):
@@ -99,7 +181,6 @@ def reverser(q,coins,temp):
 		if(int(tscores[i-1])==int(coins)):
 			tscores[i]=temp
 	'''
-
 def hscorewriter(coins,tscores):
 	for i in range(len(tscores)):
 		temp=0
@@ -315,6 +396,7 @@ def bullet(bulletxpos,bulletypos):
 priority=[0,0,0,0]
 double=False
 stopper=0
+reset()
 scorereader()
 while running:
 	if(menu):
@@ -596,9 +678,9 @@ while running:
 				pygame.draw.rect(screen,(100,100,100),[240,345,320,40])
 				starttimer=0
 				highscorestimer+=1
-				fakehighscorestimer=0
+				fakehighscorestimer=0 
 				quittimer=0
-				gameover,menu=hscorewriter(coins,tscores)
+				gameover,wrotescore=hscorewriter(coins,tscores)
 			screen.blit(shsdtext,(205,290))
 			screen.blit(shstext,(250,350))
 		else:
@@ -615,5 +697,54 @@ while running:
 	elif(tspace):
 		print(tscores)
 	elif(wrotescore):
-		print("mudinchu")
+		mousepos=pygame.mouse.get_pos()
+		screen.blit(gameoverimg,(0,0))
+		#screen.blit(replayimg,(250,250))
+		shstext=font.render('SAVED HIGH SCORE' , True , (255,255,255))
+		pygame.draw.rect(screen,(0,0,0),[280,335,225,40])
+		playagain=font.render('PLAY AGAIN' , True , (255,255,255))
+		pygame.draw.rect(screen,(0,0,0),[255,385,265,40])
+		btomenu=font.render('BACK TO MENU' , True , (255,255,255))
+		pygame.draw.rect(screen,(0,0,0),[340,435,100,40])
+		tquit=font.render('QUIT' , True , (255,255,255))
+		if(280<=mousepos[0]<=505 and 335<=mousepos[1]<=375):
+			pygame.draw.rect(screen,(100,100,100),[280,335,225,40])
+			starttimer+=1
+			highscorestimer=0
+			quittimer=0
+			menutimer=0
+			if(starttimer>selecttime):
+				reset()
+				menu=False
+				game=True
+				wrotescore=False
+		if(255<=mousepos[0]<=520 and 385<=mousepos[1]<=425):
+			pygame.draw.rect(screen,(100,100,100),[255,385,270,40])
+			starttimer+=1
+			highscorestimer=0
+			quittimer=0
+			menutimer+=1
+			if(menutimer>selecttime):
+				reset()
+				menu=True
+				wrotescore=False
+				game=False
+		if(340<=mousepos[0]<=440 and 435<=mousepos[1]<=475):
+			pygame.draw.rect(screen,(100,100,100),[340,435,110,40])
+			quittimer+=1
+			starttimer=0
+			highscorestimer=0
+			wrotescore=False
+			menutimer=0
+			if(quittimer>quitselecttime):
+				pygame.quit()
+				quitfunc()
+		screen.blit(shstext,(240,100))
+		screen.blit(playagain,(290,340))
+		screen.blit(btomenu,(265,390))
+		screen.blit(tquit,(350,440))
+		for event in pygame.event.get():
+			if event.type== pygame.QUIT:
+				running=False
+		pygame.display.update()
 	pygame.display.update()
