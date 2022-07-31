@@ -57,7 +57,7 @@ menufonts=pygame.font.Font('freesansbold.ttf',32)
 textx=10
 texty=10
 
-menu=False
+menu=True
 game=False
 gameover=False
 credits=False
@@ -83,7 +83,7 @@ bulletspeed=1.5
 shipspeed=1
 
 tscores=[]
-wrotescore=True
+wrotescore=False
 
 
 def reset():
@@ -137,7 +137,7 @@ def reset():
 	textx=10
 	texty=10
 
-	menu=False
+	menu=True
 	game=False
 	gameover=False
 	credits=False
@@ -163,7 +163,7 @@ def reset():
 	shipspeed=1
 
 	tscores=[]
-	wrotescore=True
+	wrotescore=False
 
 def reverser(q,coins,temp):
 	for i in range(q+1,len(tscores)):
@@ -657,6 +657,9 @@ while running:
 		'''
 		scoreboard(textx,texty)
 		pygame.display.update()
+
+	elif(highscores):
+		pass
 	elif(gameover):
 		screen.blit(gameoverimg,(0,0))
 		mousepos=pygame.mouse.get_pos()
